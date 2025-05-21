@@ -7,15 +7,16 @@
     "r2_buckets": [
         {
             "binding": "STORAGE",
-            "bucket_name": "my-bucket"
+            "bucket_name": "vibe-template-test"
         }
     ],
     "d1_databases": [
         {
             "binding": "DB",
-            "database_name": "BAAS_DATABASE_NAME",
-            "database_id": "BAAS_DATABASE_ID"
+            "database_name": "vibe-template-test",
+            "database_id": "9c7cf8f9-3601-46e6-894f-a9c4eda15117"
         }
     ],
     "main": "./worker/index.ts"
 }
+// wrangler d1 execute vibe-template-test --file=node_modules/@fine-dev/vibe-backend/schema.sql
