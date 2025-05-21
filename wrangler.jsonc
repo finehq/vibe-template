@@ -7,14 +7,16 @@
     "r2_buckets": [
         {
             "binding": "STORAGE",
-            "bucket_name": "vibe-template-test"
+            "bucket_name": "bucket-name"
         }
     ],
     "d1_databases": [
         {
             "binding": "DB",
-            "database_name": "vibe-template-test",
-            "database_id": "9c7cf8f9-3601-46e6-894f-a9c4eda15117"
+            "database_name": "DATABASE_NAME",
+            "database_id": "DATABASE_ID",
+            "migrations_table": "_d1_migrations",
+            "migrations_dir": "migrations"
         }
     ],
     "main": "./worker/index.ts"
