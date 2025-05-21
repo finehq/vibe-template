@@ -1,0 +1,21 @@
+{
+    "name": "vibe-template",
+    "compatibility_date": "2025-04-03",
+    "assets": {
+        "not_found_handling": "single-page-application"
+    },
+    "r2_buckets": [
+        {
+            "binding": "STORAGE",
+            "bucket_name": "my-bucket"
+        }
+    ],
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "BAAS_DATABASE_NAME",
+            "database_id": "BAAS_DATABASE_ID"
+        }
+    ],
+    "main": "./worker/index.ts"
+}
