@@ -87,30 +87,39 @@ This template comes complete with a backend powered by Hono, with routes availab
 
 ### Adding Custom API Endpoints
 
-To add your own custom API endpoints, modify the Hono app in `worker/index.ts`:
+To add your own custom API endpoints, pass a callback to the `vibeBackend` function in `workers/index.ts`:
 
 ```typescript
 // Add this before creating the apiRouter
-app.get("/custom-endpoint", (c) => {
-  return c.json({ message: "Hello from custom endpoint!" });
+const backend = vibeBackend((apiRouter) => {
+  apiRouter.get("/custom-endpoint", (c) => {
+    return c.json({ message: "Hello from custom endpoint!" });
+  });
 });
+```
 
-// Add authenticated endpoints
-app.use("/secure-endpoint", async (c, next) => {
-  // This middleware checks if the user is authenticated
-  const user = c.get("user");
-  if (!user) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-  return next();
-});
+You may use the `authenticatedOnly` or `adminOnly` middleware to restrict access to your routes:
 
-app.get("/secure-endpoint", (c) => {
-  const user = c.get("user");
-  return c.json({ message: `Hello, ${user.name}!` });
-});
+```typescript
+import { authenticatedOnly } from "@fine-dev/vibe-backend"
+...
+// Place this before routes that should be authenticated, and after routes that should be open
+apiRouter.use(authenticatedOnly)
+```
 
-const apiRouter = new Hono().route("/api", app);
+### Auth context
+
+The vibe backend takes care of adding authentication data to the context on all requests, available at `c.get("auth")`:
+
+```typescript
+{
+    // `user.bypass` will be set to true either when the user is an admin, or when the `BYPASS_AUTH` environment variable is set to `true`.
+    user: User | { bypass: true; id: string } | null
+    session?: Session | null
+    role: "anon" | "user" | "admin"
+    // A BetterAuth client instance
+    client: ReturnType<typeof createAuth>
+}
 ```
 
 ### Migrations
