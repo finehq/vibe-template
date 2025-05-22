@@ -6,15 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "deploy": "npm run db:migrations:apply && wrangler deploy",
+    "deploy": "npm run db:preset-migrations && wrangler deploy",
+    "publish": "npm run build && npm run deploy",
     "lint": "eslint .",
     "preview": "vite preview",
-    "publish": "npm run build && npm exec wrangler deploy",
-    "db:migrations:apply": "wrangler d1 execute DB --remote --file=node_modules/@fine-dev/vibe-backend/schema.sql"
+    "db:preset-migrations": "wrangler d1 execute DB --remote --file=node_modules/@fine-dev/vibe-backend/schema.sql"
   },
   "dependencies": {
-    "@fine-dev/fine-js": "^0.0.19",
-    "@fine-dev/vibe-backend": "^0.0.0",
+    "@fine-dev/fine-js": "^0.0.22",
+    "@fine-dev/vibe-backend": "^0.0.4",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",

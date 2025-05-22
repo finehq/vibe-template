@@ -1,78 +1,55 @@
 # Fine Vibe Template
 
-This template allows you to create a full-stack app with Vite, complete with API endpoints, and deploy it to a cloudflare worker.
+This template allows you to create a full-stack app with Vite and React, complete with API endpoints, and deploy it to a Cloudflare worker.
+
+The template is jam-packed with the following awesome features:
+
+- 🔐 **Authentication** - Seamless user management with secure login/signup flows and session handling
+- 💾 **Database** - Simple yet powerful database operations with type-safe queries and mutations
+- 📁 **Storage** - Entity-based file storage for images, documents, and more with automatic database references
+- 🤖 **AI Assistants** - Create context-aware AI threads with streaming responses and image upload capabilities
+- 🎙️ **Audio Transcription** - Convert audio recordings or uploaded files to text with a simple API
+- ⚡ **Serverless Ready** - Built to run perfectly on Cloudflare Workers with D1 database and R2 storage
+- 🔄 **Full-Stack Integration** - Seamlessly connect your frontend to backend services with minimal code
+- 🛠️ **Extensible Backend** - Add custom API endpoints under `/api/` with full TypeScript support and access to all Fine features
+
+All of these are powered by the powerful Fine SDK (`@fine-dev/fine-js`), coupled with Fine's Vibe Backend (`@fine-dev/vibe-backend`)—a wrapper over Hono.
 
 ## Getting Started
-
-Before deploying, make sure that you have a Cloudflare account and the Wrangler CLI installed (`npm i -g wrangler`).
 
 The fastest and easist way to get your project up and running is to use Cloudflare's deployment wizard:
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/finehq/vibe-template)
 
-#### Using the CLI
+### Manual Setup
 
-If you prefer to have more control over the process, you can use the following CLI command:
+If you prefer to setup your project manually, you will need to:
 
-```bash
-npm create @fine-dev/vibe
-```
+1. Clone the template with `git clone https://github.com/finehq/vibe-template my-project`
+2. Change the `name` field in both `package.json` and `wrangler.jsonc` to your project's name
+3. Create a D1 database for your project and update its name and id in `wrangler.jsonc` (see [D1 Database Setup Guide](https://developers.cloudflare.com/d1/get-started/))
+4. Run `npm run db:preset-migrations` to ensure that your D1 Database has all the required tables
+5. Have an R2 storage bucket set up and update its name in `wrangler.jsonc` (see [R2 Storage Setup Guide](https://developers.cloudflare.com/r2/get-started/))
+6. Publish your worker to Cloudflare with `npm run publish` (requires Cloudflare's Wrangler CLI)
 
-Before running the CLI, make sure that you have the following:
+## Fine SDK 📦 `@fine-dev/fine-js`
 
-- A D1 database for your project
-  - [D1 Database Setup Guide](https://developers.cloudflare.com/d1/get-started/)
-- An R2 storage bucket set up
-  - [R2 Storage Setup Guide](https://developers.cloudflare.com/r2/get-started/)
-
-The CLI will guide you through the setup process:
-
-1. Enter your project name
-2. Provide your Cloudflare D1 database name and ID
-3. Enter your R2 bucket name
-
-Once complete, the CLI will:
-
-- Clone the template repository into a new folder with your project name
-- Configure `wrangler.jsonc` with your D1 database and R2 bucket settings
-- Update the `package.json` with your project name
-
-When you're ready to deploy your project, you will then need to run `npm run publish`. This command requires having the Wrangler CLI installed and configured.
-
-## SDK and API Capabilities
-
-This template comes pre-configured with a powerful stack that provides:
-
-## Fine SDK
-
-The Fine SDK, pre-installed with this template, is a powerful toolkit designed to simplify the process of authenticating users, performing database operations, and storing files. `@fine-dev/fine-js` provides a FineClient class, which, once instantiated, provides all of the SDK functionality.
+The Fine SDK, pre-installed with this template, is a powerful toolkit designed to simplify the process of authenticating users, performing database operations, and storing files. An instance of the SDK is exported and ready to use from `@/lib/fine`.
 
 Key components of the Fine SDK include:
 
-- Database: `FineClient` extends `D1RestClient, providing methods for querying and mutating the database. The database is a SQLite database, and is queried using a REST API.
-- Authentication: `fine.auth` is an instance of Better Auth's authentication client
-- AI Client: `fine.ai` is an instance of the `FineAIClient`, which allows applications to conduct thread-based interactions with AI.
-- Storage: `fine.storage` is an instance of the `FineStorageClient`, which allows you to upload, download and delete files bound to a specific entity in the database.
+- 🗄️ **Database**: `FineClient` extends `D1RestClient`, providing powerful methods for querying and mutating your SQLite database through a simple REST API
+- 🔑 **Authentication**: Every `FineClient` instance includes Better Auth for seamless user management, available via `.auth`
+- 🤖 **AI Client**: Access AI capabilities through `.ai` - an instance of `FineAIClient` that enables thread-based interactions with AI assistants
+- 📁 **Storage**: Use `.storage` to easily manage files with `FineStorageClient` - upload, download and delete files that are automatically linked to your database entities
 
-For more details about the Fine SDK, see [the fine-js GitHub repository](@fine-dev/fine-js).
-
-### Configuring the Fine Client
-
-The Fine client is initialized in `src/lib/fine.ts`. Make sure to update the worker URL that it receives to reflect the URL to your project's worker.
-
-You may find your Workers subdomain in the Cloudflare dashboard:
-
-1. Log in to your Cloudflare dashboard
-2. Navigate to **Workers & Pages**
-3. Look for **Subdomain** in the right-hand sidebar.
-
-Your worker address will follow the pattern `WORKER_ADDRESS.WORKERS_SUBDOMAIN`, e.g. `my-project.john-t3u.workers.dev`.
+For more details about the Fine SDK, see [fine-js on GitHub](https://github.com/finehq/fine-js).
 
 ### Database Types
 
 The file `src/lib/db-types.ts` should contain types that reflect the database schema. It is recommended to keep it up to date with any changes you make to the schema to ensure that the SDK is type-safe:
 
-- Table types should be contained within a record type `type Schema extends Record<string, Record<string, any>>`, where keys are table names, and values describe the columns and their types..
+- Table types should be contained within a record type `type Schema extends Record<string, Record<string, any>>`, where keys are table names, and values describe the columns and their types.
 - Types should always match the casing of tables and columns in the database.
 - Types should always reflect the type required for _insert_ - this means that columns that have defaults should be optional (e.g. `{ id?: number }`). This includes, for example, `AUTOINCREMENT` columns, columns that have a `DEFAULT` defined on them, or nullable columns (those not defined as `NOT NULL`).
 - To reflect the schema consistently, always make sure that nullable columns of a given type T are properly defined as `T | null`.
@@ -98,13 +75,15 @@ export type Schema = {
 
 ### Protected Routes
 
-If you have a route that requires authentication, wrap it with the `ProtectedRoute` component. This is a wrapper component that is already integrated with the Fine SDK, which will make sure that only authenticated users have access.
+If you have a route that requires authentication, wrap it with the `ProtectedRoute` component. This is a wrapper component that is already integrated with the Fine SDK, making sure that only authenticated users have access:
 
-## Backend Framework (@fine-dev/vibe-backend)
+```tsx
+<Route path='/tasks' element={<ProtectedRoute Component={TaskList} />} />
+```
 
-This template comes complete with a backend powered by Hono, with routes available at `/api/`. The backend is already loaded with all of the functionality required by the Fine SDK, provided by the `@fine-dev/vibe-backend` package.
+## Vibe Backend 📦 `@fine-dev/vibe-backend`
 
-The backend is easily extensible to include your own business logic. API endpoints are defined in the `/worker` directory, with the entrypoint being `worker/index.ts`.
+This template comes complete with a backend powered by Hono, with routes available at `/api/`. The backend is already loaded with all of the functionality required by the Fine SDK, provided by the `@fine-dev/vibe-backend` package, and is easily extensible.
 
 ### Adding Custom API Endpoints
 

@@ -1,4 +1,4 @@
-import withFineRoutes, { Hono, type HonoEnv } from "@fine-dev/vibe-backend";
+import vibeBackend from "@fine-dev/vibe-backend";
 
 declare global {
     interface Env {
@@ -6,13 +6,12 @@ declare global {
     }
 }
 
-const app = withFineRoutes(new Hono<HonoEnv>())
-const apiRouter = new Hono().route("/api", app);
+const backend = vibeBackend()
 
 export default {
     fetch(request, env) {
         const url = new URL(request.url);
-        if (url.pathname.startsWith("/api/")) return apiRouter.fetch(request, env)
+        if (url.pathname.startsWith("/api/")) return backend.fetch(request, env)
 
         return new Response(null, { status: 404 });
     },
