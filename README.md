@@ -87,14 +87,16 @@ This template comes complete with a backend powered by Hono, with routes availab
 
 ### Adding Custom API Endpoints
 
-To add your own custom API endpoints, pass a callback to the `vibeBackend` function in `workers/index.ts`:
+To add your own custom API endpoints, pass an `addCustomRoutes` function inside the `vibeBackend` options in `workers/index.ts`:
 
 ```typescript
 // Add this before creating the apiRouter
-const backend = vibeBackend((apiRouter) => {
-  apiRouter.get("/custom-endpoint", (c) => {
-    return c.json({ message: "Hello from custom endpoint!" });
-  });
+const backend = vibeBackend({
+  addCustomRoutes(apiRouter) {
+    apiRouter.get("/custom-endpoint", (c) => {
+      return c.json({ message: "Hello from custom endpoint!" });
+    });
+  },
 });
 ```
 
@@ -106,6 +108,18 @@ import { authenticatedOnly } from "@fine-dev/vibe-backend"
 // Place this before routes that should be authenticated, and after routes that should be open
 apiRouter.use(authenticatedOnly)
 ```
+
+### Using Assistants
+
+If using the assistants API provided by the backend, you will need to set the `OPENAI_API_KEY` environment variable:
+
+```
+npx wrangler secret put OPENAI_API_KEY
+```
+
+For local development, place this variable inside of a `.dev.vars` file - the syntax is identical to a `.env` file.
+
+Read more about secrets in the [Cloudflare Docs](https://developers.cloudflare.com/workers/configuration/secrets/).
 
 ### Auth context
 

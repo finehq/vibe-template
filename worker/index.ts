@@ -1,4 +1,5 @@
 import vibeBackend from "@fine-dev/vibe-backend";
+import { assistants } from "./assistants";
 
 declare global {
     interface Env {
@@ -6,7 +7,7 @@ declare global {
     }
 }
 
-const backend = vibeBackend()
+const backend = vibeBackend({ assistants })
 
 export default {
     fetch(request, env) {
