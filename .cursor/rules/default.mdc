@@ -54,10 +54,6 @@ function Header() {
 }
 ```
 
-# Diagrams
-
-- Use Mermaid for diagrams and flowcharts.
-
 # Fine SDK
 
 The Fine SDK is a powerful toolkit designed to simplify the process of authenticating users, performing database operations, and storing files. `@fine-dev/fine-js` provides a FineClient class, which, once instantiated, provides all of the SDK functionality. The Fine SDK is pre-installed with this project, and a client instance is exported as `fine` from `@/lib/fine.ts` - NEVER TOUCH THIS FILE.
@@ -566,52 +562,6 @@ declare class FineAIMessage {
     private readStream;
 }
 ```
-
-### 🛠 API Summary
-
-#### `fine.ai.message(assistantId, content)`
-
-Creates a new message sender. This is the preferred way to **create a thread and send a message**.
-
-- `.setMetadata(obj)` — (chainable) attach metadata to the message
-- `.send()` — send the message and wait for full result
-- `.stream(callback)` — stream content and receive progress events
-
-#### `fine.ai.threads`
-
-Fetches all threads.
-
-```ts
-const threads = await client.threads;
-```
-
-#### `fine.ai.thread(threadId)`
-
-Refers to an existing thread.
-
-- `.data` — fetch thread metadata
-- `.messages` — get messages in the thread
-- `.update(metadata)` — update thread metadata
-- `.delete()` — delete the thread
-- `.message(...)` — create a message in this thread
-
-### 💑 Types
-
-Useful types provided by the client:
-
-- `AIThreadData`
-- `AIMessageData`
-- `AIMessageContent`
-- `AIStreamEvent`
-- `MessageRunResult`
-
-# Revisions
-
-When a user requests revisions to code that you have written, we call this a revision. This could include requests such as "Make the UI more colorful", or "The following error occurred, please fix it:..."
-
-- During revisions, only touch the files that you must touch in order to fulfill the request.
-- If you need to make changes to the schema, you may do so by creating _a new_ migration file - never overwrite existing migration files, and never add migrations if this is not necessary to fulfill the request.
-- Make sure that even in the files that you do touch, you only change the code that actually needs to be changed. Do not make unnecessary/irrelevant changes.
 
 # UI
 
