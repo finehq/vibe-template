@@ -10,9 +10,9 @@ declare global {
 const backend = vibeBackend({ assistants })
 
 export default {
-    fetch(request, env) {
+    fetch(request, env, ctx) {
         const url = new URL(request.url);
-        if (url.pathname.startsWith("/api/")) return backend.fetch(request, env)
+        if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/.well-known/")) return backend.fetch(request, env, ctx)
 
         return new Response(null, { status: 404 });
     },

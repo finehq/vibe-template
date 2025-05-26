@@ -1,6 +1,31 @@
 {
     "name": "vibe-template",
     "compatibility_date": "2025-04-03",
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
+    "migrations": [
+        {
+            "new_sqlite_classes": [
+                "BoilerplateMCP"
+            ],
+            "tag": "v1"
+        }
+    ],
+    "durable_objects": {
+        "bindings": [
+            {
+                "class_name": "BoilerplateMCP",
+                "name": "MCP_OBJECT"
+            }
+        ]
+    },
+    "kv_namespaces": [
+        {
+            "binding": "OAUTH_KV",
+            "id": "56cf940eefd04a10a332d85618ae1b8b"
+        }
+    ],
     "assets": {
         "not_found_handling": "single-page-application"
     },
