@@ -109,6 +109,20 @@ import { authenticatedOnly } from "@fine-dev/vibe-backend"
 apiRouter.use(authenticatedOnly)
 ```
 
+### Auth Secret
+
+For security reasons, you should set your own `AUTH_SECRET` environment variable in production. You can generate a secret with the following command:
+
+```
+openssl rand -base64 32
+```
+
+Then, run the following to deploy it to cloudflare:
+
+```
+npx wrangler secret put AUTH_SECRET
+```
+
 ### Using Assistants
 
 If using the assistants API provided by the backend, you will need to set the `OPENAI_API_KEY` environment variable:

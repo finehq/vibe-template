@@ -1,6 +1,6 @@
 import type React from "react";
-import { useState } from "react";
-import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { fine } from "@/lib/fine";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,23 +21,22 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const { isPending, data: session } = fine.auth.useSession();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     // Clear error when user types
-    if (errors[name]) {
+    if (errors[name])
       setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[name];
         return newErrors;
       });
-    }
   };
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, rememberMe: checked }));
-  };
+  const handleCheckboxChange = (checked: boolean) => setFormData((prev) => ({ ...prev, rememberMe: checked }));
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -64,33 +63,15 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await fine.auth.signIn.email(
-        {
-          email: formData.email,
-          password: formData.password,
-          callbackURL: "/",
-          rememberMe: formData.rememberMe,
+      await fine.auth.signIn.email(formData, {
+        onRequest: () => setIsLoading(true),
+        onSuccess: () => {
+          toast({ title: "Success", description: "You have been signed in successfully." });
         },
-        {
-          onRequest: () => {
-            setIsLoading(true);
-          },
-          onSuccess: () => {
-            toast({
-              title: "Success",
-              description: "You have been signed in successfully.",
-            });
-            navigate("/");
-          },
-          onError: (ctx) => {
-            toast({
-              title: "Error",
-              description: ctx.error.message,
-              variant: "destructive",
-            });
-          },
-        }
-      );
+        onError: (ctx) => {
+          toast({ title: "Error", description: ctx.error.message, variant: "destructive" });
+        },
+      });
     } catch (error: any) {
       toast({
         title: "Error",
@@ -102,16 +83,18 @@ export default function LoginForm() {
     }
   };
 
-  if (!fine) return <Navigate to='/' />;
-  const { isPending, data } = fine.auth.useSession();
-  if (!isPending && data) return <Navigate to='/' />;
+  if (!isPending && session) {
+    const redirectTo = localStorage.getItem("redirectAfterLogin");
+    if (redirectTo) localStorage.removeItem("redirectAfterLogin");
+
+    return <Navigate to={redirectTo || "/"} />;
+  }
 
   return (
     <div className='container mx-auto flex h-screen items-center justify-center py-10'>
       <Card className='mx-auto w-full max-w-md'>
         <CardHeader>
           <CardTitle className='text-2xl'>Sign in</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className='space-y-4'>
