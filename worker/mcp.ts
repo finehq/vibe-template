@@ -1,4 +1,4 @@
-import { FineMCP, dbMcpHelpers } from "@fine-dev/vibe-backend"
+import { FineMCP } from "@fine-dev/vibe-backend"
 import { z } from "zod"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 
@@ -23,6 +23,7 @@ export class AppMCP extends FineMCP {
             })
         )
 
-        dbMcpHelpers.addSelectTool(this, "user")
+        // Example usage of the generic dbTools
+        this.dbTools.select("user")
     }
 }
