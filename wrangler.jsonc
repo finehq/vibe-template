@@ -7,7 +7,7 @@
     "migrations": [
         {
             "new_sqlite_classes": [
-                "MyMCP"
+                "AppMCP"
             ],
             "tag": "v1"
         }
@@ -15,7 +15,7 @@
     "durable_objects": {
         "bindings": [
             {
-                "class_name": "MyMCP",
+                "class_name": "AppMCP",
                 "name": "MCP_OBJECT"
             }
         ]

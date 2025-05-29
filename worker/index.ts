@@ -1,6 +1,6 @@
 import vibeBackend from "@fine-dev/vibe-backend";
 import { assistants } from "./assistants";
-import { MyMCP } from "./mcp";
+import { AppMCP } from "./mcp";
 
 declare global {
     interface Env {
@@ -8,7 +8,7 @@ declare global {
     }
 }
 
-const backend = vibeBackend({ assistants, mcp: MyMCP })
+const backend = vibeBackend({ assistants, mcp: AppMCP })
 
 export default {
     fetch(request, env, ctx) {
@@ -19,4 +19,4 @@ export default {
     },
 } satisfies ExportedHandler<Env>
 
-export { MyMCP }
+export { AppMCP }
